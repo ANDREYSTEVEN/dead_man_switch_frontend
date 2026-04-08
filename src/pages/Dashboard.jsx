@@ -4,11 +4,23 @@ import { useDeadManSwitch } from "../hooks/useDeadManSwitch";
 const Dashboard = () => {
   const { timeLeft, active, resetTimer } = useDeadManSwitch(30);
 
-  // estados visuales
+  const getStatus = () => {
+    if (!active) return "critical";
+    if (timeLeft <= 10) return "warning";
+    return "normal";
+  };
+
+  const status = getStatus();
+
   const getStatusColor = () => {
-    if (!active) return "text-red-500";
-    if (timeLeft <= 10) return "text-yellow-400";
-    return "text-green-400";
+    switch (status) {
+      case "critical":
+        return "text-red-500";
+      case "warning":
+        return "text-yellow-400";
+      default:
+        return "text-green-400";
+    }
   };
 
   const getProgress = () => {
@@ -20,23 +32,23 @@ const Dashboard = () => {
       
       <div className="w-full max-w-xl">
 
-        {/* Header */}
         <h1 className="text-3xl font-semibold mb-6 text-center">
           Dead Man's Switch
         </h1>
 
-        {/* Card */}
-        <div className="bg-gray-900 p-6 rounded-2xl shadow-xl space-y-6">
+        <div className={`bg-gray-900 p-6 rounded-2xl shadow-xl space-y-6
+          ${status === "critical" ? "animate-pulse" : ""}
+        `}>
 
           {/* Estado */}
           <div className="flex justify-between items-center">
             <span className="text-gray-400">Estado</span>
             <span className={`font-semibold ${getStatusColor()}`}>
-              {active ? "Activo" : "Disparado"}
+              {status === "critical" ? "DISPARADO" : status === "warning" ? "ALERTA" : "ACTIVO"}
             </span>
           </div>
 
-          {/* Timer grande */}
+          {/* Timer */}
           <div className="text-center">
             <h2 className="text-5xl font-bold">
               {timeLeft}s
@@ -46,10 +58,14 @@ const Dashboard = () => {
             </p>
           </div>
 
-          {/* Barra de progreso */}
+          {/* Barra */}
           <div className="w-full bg-gray-800 h-3 rounded-full overflow-hidden">
             <div
-              className="h-full bg-blue-500 transition-all duration-1000"
+              className={`h-full transition-all duration-1000
+                ${status === "critical" ? "bg-red-500" :
+                  status === "warning" ? "bg-yellow-400" :
+                  "bg-blue-500"}
+              `}
               style={{ width: `${getProgress()}%` }}
             />
           </div>
