@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export const useDeadManSwitch = (initialTime = 60) => {
+export const useDeadManSwitch = (initialTime = 30) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const [active, setActive] = useState(true);
 
@@ -17,7 +17,6 @@ export const useDeadManSwitch = (initialTime = 60) => {
   useEffect(() => {
     if (timeLeft <= 0) {
       setActive(false);
-      console.log("⚠️ Dead man's switch triggered");
     }
   }, [timeLeft]);
 
